@@ -1,22 +1,19 @@
-import db from '../models';
 import axios from 'axios';
 import express from 'express';
+import db from '../models';
 
 const apiRouter = express.Router();
 
-const foodURL =
-  'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522,151.1957362&radius=1500&type=restaurant&keyword=cruise&key=AIzaSyC9eRMr-ZCaKj0Ttta4-RQGz0hxnDulTNY';
-const SEARCH_URL =
-  'https://maps.googleapis.com/maps/api/place/textsearch/json?query=restaurants+in+Sydney&key=AIzaSyC9eRMr-ZCaKj0Ttta4-RQGz0hxnDulTNY';
-const findPlaceURL =
-  'https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=Museum%20of%20Contemporary%20Art%20Australia&inputtype=textquery&fields=photos,formatted_address,name,rating,opening_hours,geometry&key=AIzaSyC9eRMr-ZCaKj0Ttta4-RQGz0hxnDulTNY';
+const foodURL = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522,151.1957362&radius=1500&type=restaurant&keyword=cruise&key=AIzaSyC9eRMr-ZCaKj0Ttta4-RQGz0hxnDulTNY';
+const SEARCH_URL = 'https://maps.googleapis.com/maps/api/place/textsearch/json?query=restaurants+in+Sydney&key=AIzaSyC9eRMr-ZCaKj0Ttta4-RQGz0hxnDulTNY';
+const findPlaceURL = 'https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=Museum%20of%20Contemporary%20Art%20Australia&inputtype=textquery&fields=photos,formatted_address,name,rating,opening_hours,geometry&key=AIzaSyC9eRMr-ZCaKj0Ttta4-RQGz0hxnDulTNY';
 
 const getPlacesFromGoogle = async (req, res) => {
   try {
     // const { searchTerm } = req.body;
 
     const { data } = await axios.get(SEARCH_URL);
-    const IMAGE_URL = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${data.results.photos[0].photo_reference}&key=AIzaSyC9eRMr-ZCaKj0Ttta4-RQGz0hxnDulTNY`
+    const IMAGE_URL = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${data.results.photos[0].photo_reference}&key=AIzaSyC9eRMr-ZCaKj0Ttta4-RQGz0hxnDulTNY`;
     console.log(data);
     res.json(data, IMAGE_URL);
   } catch (error) {
