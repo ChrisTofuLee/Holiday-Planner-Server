@@ -30,7 +30,7 @@ const getAllPlans = async (req, res) => {
   try {
     const allPlans = await db.Plan.find({}).sort({ date: -1 });
     res.json({
-    allPlans,
+        allPlans,
     });
   } catch (error) {
     res.status(500).json({
