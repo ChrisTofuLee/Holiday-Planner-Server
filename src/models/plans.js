@@ -10,9 +10,26 @@ const schema = new Schema({
   createdAt: {
     type: Date,
   },
-  destinations: {
-    type: [String],
-  },
+  destinations: [
+    {
+      id: {
+        type: String,
+        required: true,
+      },
+      name: {
+        type: String,
+        required: true,
+      },
+      address: {
+        type: String,
+        required: true,
+      },
+      type: {
+        type: String,
+        required: true,
+      },
+    },
+  ],
 });
 
 const Plan = mongoose.model('Plan', schema);
