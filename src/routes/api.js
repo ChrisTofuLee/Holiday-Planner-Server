@@ -28,10 +28,10 @@ const getPlacesFromGoogle = async (req, res) => {
 
 const getAllPlans = async (req, res) => {
   try {
-      const allPlans = await db.Plan.find({}).sort({ date: -1})
-      res.json({
-          allPlans
-      })
+    const allPlans = await db.Plan.find({}).sort({ date: -1 })
+    res.json({
+        allPlans,
+    });
   } catch (error) {
     res.status(500).json({
       error: error.message,
@@ -55,7 +55,7 @@ const savePlanInDB = async (req, res) => {
   }
 };
 
-//double check this
+// double check this
 const removePlanInDB = async (req, res) => {
   try {
     const { id } = req.params;
