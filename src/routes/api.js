@@ -27,7 +27,16 @@ const getPlacesFromGoogle = async (req, res) => {
 };
 
 const getAllPlans = async (req, res) => {
-  res.json();
+  try {
+      const allPlans = await db.Plan.find({}).sort({ date: -1})
+      res.json({
+          allPlans
+      })
+  } catch (error) {
+    res.status(500).json({
+      error: error.message,
+    });
+  }
 };
 
 const savePlanInDB = async (req, res) => {
@@ -46,7 +55,26 @@ const savePlanInDB = async (req, res) => {
   }
 };
 
+//double check this
 const removePlanInDB = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    await db.Plan.places.findByIdAndDelete(id);
+    const results = await db.Plan.places.find({});
+
+    res.json({
+      success: true,
+      results,
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: error.message,
+    });
+  }
+};
+
+const removePlaceInDB = async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -64,12 +92,20 @@ const removePlanInDB = async (req, res) => {
   }
 };
 
-const removePlaceInDB = async (req, res) => {
-  res.json();
-};
-
 const savePlaceInDB = async (req, res) => {
-  res.json();
+  try {
+    const payload = req.body;
+
+    await db.Plan.places.create(payload);
+
+    res.json({
+      success: true,
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: error.message,
+    });
+  }
 };
 
 // const getPlanById = async (res, res) => {
@@ -80,8 +116,9 @@ apiRouter.get('/cities', getPlacesFromGoogle);
 apiRouter.get('/plans', getAllPlans);
 // apiRouter.get('/plans/:id', getPlanById)
 apiRouter.post('/plans', savePlanInDB);
-apiRouter.post('/places', savePlaceInDB);
 apiRouter.delete('/plans/:id', removePlanInDB);
+// should it be /plans/:id/places/:id?
+apiRouter.post('/places', savePlaceInDB);
 apiRouter.delete('/places/:id', removePlaceInDB);
 
 export default apiRouter;
