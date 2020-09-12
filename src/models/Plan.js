@@ -9,10 +9,12 @@ const schema = new Schema({
   },
   createdAt: {
     type: Date,
+    default: Date.now,
+    required: true,
   },
-  destinations: [
+  places: [
     {
-      id: {
+      googlePlacesId: {
         type: String,
         required: true,
       },
@@ -28,10 +30,13 @@ const schema = new Schema({
         type: String,
         required: true,
       },
+      rating: {
+        type: Number,
+      },
     },
   ],
 });
-
+// add last updated at?
 const Plan = mongoose.model('Plan', schema);
 
 module.exports = Plan;
