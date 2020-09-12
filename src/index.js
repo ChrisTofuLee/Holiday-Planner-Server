@@ -1,9 +1,11 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
-import { PORT, DB_URI, MONGOOSE_OPTIONS } from './config';
+import apiRoutes from './routes/api';
 
 const app = express();
+
+const { PORT, DB_URI, MONGOOSE_OPTIONS } = require('./config');
 
 app.use(express.json());
 app.use(
