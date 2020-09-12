@@ -34,7 +34,7 @@ const schema = new Schema({
     },
   ],
 });
-//add last updated at?
+// add last updated at?
 const Plan = mongoose.model('Plan', schema);
 
 module.exports = Plan;
