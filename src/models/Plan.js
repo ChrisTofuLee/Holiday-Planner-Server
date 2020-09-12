@@ -9,10 +9,12 @@ const schema = new Schema({
   },
   createdAt: {
     type: Date,
+    default: Date.now,
+    required: true
   },
   places: [
     {
-      id: {
+      googlePlacesId: {
         type: String,
         required: true,
       },
