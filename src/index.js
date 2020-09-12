@@ -2,10 +2,10 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import apiRoutes from './routes/api';
+import config from './config';
 
+const { PORT, DB_URI, MONGOOSE_OPTIONS } = config;
 const app = express();
-
-const { PORT, DB_URI, MONGOOSE_OPTIONS } = require('./config');
 
 app.use(express.json());
 app.use(

@@ -8,7 +8,7 @@ const MONGOOSE_OPTIONS = {
   useNewUrlParser: true,
 };
 
-module.exports = {
+export default {
   PORT,
   DB_URI,
   MONGOOSE_OPTIONS,

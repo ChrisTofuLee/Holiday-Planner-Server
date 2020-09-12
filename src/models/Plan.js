@@ -10,7 +10,7 @@ const schema = new Schema({
   createdAt: {
     type: Date,
   },
-  destinations: [
+  places: [
     {
       id: {
         type: String,
@@ -27,6 +27,9 @@ const schema = new Schema({
       type: {
         type: String,
         required: true,
+      },
+      rating: {
+        type: Number,
       },
     },
   ],
