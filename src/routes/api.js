@@ -72,6 +72,10 @@ const savePlaceInDB = async (req, res) => {
   res.json();
 };
 
+const getPlanById = async (res, res) => {
+  res.json();
+};
+
 apiRouter.get('/cities', getPlacesFromGoogle);
 apiRouter.get('/plans', getAllPlans);
 apiRouter.get('/plan/:id', getPlanById)
