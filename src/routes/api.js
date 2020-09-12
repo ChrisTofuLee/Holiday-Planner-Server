@@ -1,5 +1,5 @@
-import db from '../models';
-import axios from 'axios';
+// import db from '../models';
+// import axios from 'axios';
 import express from 'express';
 
 const apiRouter = express.Router();
