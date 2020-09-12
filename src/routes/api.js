@@ -14,7 +14,7 @@ const getPlacesFromGoogle = async (req, res) => {
 
     const { data } = await axios.get(SEARCH_URL);
     const IMAGE_URL = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${data.results.photos[0].photo_reference}&key=AIzaSyC9eRMr-ZCaKj0Ttta4-RQGz0hxnDulTNY`;
-    console.log(data);
+    console.log(data, foodURL, findPlaceURL);
     res.json(data, IMAGE_URL);
   } catch (error) {
     res.status(500).json({
