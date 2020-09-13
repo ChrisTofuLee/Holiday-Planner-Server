@@ -28,7 +28,8 @@ const getPlacesFromGoogle = async (req, res) => {
 
 const getAllPlans = async (req, res) => {
   try {
-    const allPlans = await db.Plan.find({}).sort({ date: -1 });
+    const allPlans = await db.Plan.find({});
+    // const allPlans = await db.Plan.find({}).sort({ date: -1 })
     res.json({ allPlans });
   } catch (error) {
     res.status(500).json({
@@ -115,7 +116,7 @@ apiRouter.get('/plans', getAllPlans);
 // apiRouter.get('/plans/:id', getPlanById)
 apiRouter.post('/plans', savePlanInDB);
 apiRouter.delete('/plans/:id', removePlanInDB);
-// should it be /plans/:id/places/:id?
+// should it be /?plan/places/:id?
 apiRouter.post('/places', savePlaceInDB);
 apiRouter.delete('/places/:id', removePlaceInDB);
 
