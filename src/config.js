@@ -1,15 +1,12 @@
-const PORT = process.env.PORT || 8000;
+export const PORT = process.env.PORT || 8000;
 
-const DB_URI = process.env.MONGODB_URI || 'mongodb://localhost/holidayPlanner';
+export const DB_URI =
+  process.env.MONGODB_URI || 'mongodb://localhost/holidayPlanner';
 
-const MONGOOSE_OPTIONS = {
+export const MONGOOSE_OPTIONS = {
   useUnifiedTopology: true,
   useCreateIndex: true,
   useNewUrlParser: true,
+  useFindAndModify: false,
 };
-
-export default {
-  PORT,
-  DB_URI,
-  MONGOOSE_OPTIONS,
-};
+export const AUTH_SECRET = process.env.AUTH_SECRET || 'test-secret';
