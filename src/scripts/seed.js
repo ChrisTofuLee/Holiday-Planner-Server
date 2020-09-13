@@ -1,8 +1,6 @@
 import mongoose from 'mongoose';
 import db from '../models';
-import config from '../config';
-
-const { DB_URI, MONGOOSE_OPTIONS } = config;
+import { DB_URI, MONGOOSE_OPTIONS } from '../config';
 
 mongoose.connect(DB_URI, MONGOOSE_OPTIONS);
 
