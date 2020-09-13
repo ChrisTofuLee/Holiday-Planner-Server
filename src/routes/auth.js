@@ -16,7 +16,6 @@ const registerUser = async (req, res) => {
   const { firstName, lastName, email, password } = req.body;
   if (validate(req.body)) {
     const user = await db.User.findOne({ email });
-    console.log(user);
     if (user) {
       res.status(303).json({
         success: false,
