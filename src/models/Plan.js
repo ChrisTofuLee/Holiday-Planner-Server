@@ -35,6 +35,15 @@ const schema = new Schema({
       },
     },
   ],
+  userId: {
+    type: String,
+    required: true,
+  },
+  // if need to multi reference
+  // userId: {
+  //   type: Schema.Types.ObjectId,
+  //   ref: 'User',
+  // },
 });
 // add last updated at?
 const Plan = mongoose.model('Plan', schema);

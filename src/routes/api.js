@@ -27,7 +27,19 @@ const getPlacesFromGoogle = async (req, res) => {
 };
 
 const getAllPlans = async (req, res) => {
-  res.json();
+  try {
+    const {
+      user: { id },
+    } = req;
+    console.log(req.user);
+    const allPlans = await db.Plan.find({ userId: id });
+    // const allPlans = await db.Plan.find({}).sort({ date: -1 })
+    res.json({ allPlans });
+  } catch (error) {
+    res.status(500).json({
+      error: error.message,
+    });
+  }
 };
 
 const savePlanInDB = async (req, res) => {

@@ -21,6 +21,25 @@ const plans = [
         rating: '4.2',
       },
     ],
+    userId: '5f5e2a70c67c9d6a78c50b4e',
+  },
+  {
+    title: 'France',
+    places: [
+      {
+        name: "Tetsuya's Restaurant",
+        address: '529 Kent St, Sydney NSW 2000, Australia',
+        type: 'food',
+        rating: '4.6',
+      },
+      {
+        name: "Tetsuya's Museum",
+        address: '225 brown St, Sydney NSW 2000, Australia',
+        type: 'daytime',
+        rating: '4.2',
+      },
+    ],
+    userId: '1314124323',
   },
 ];
 db.Plan.deleteMany({})

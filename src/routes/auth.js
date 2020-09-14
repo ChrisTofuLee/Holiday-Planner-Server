@@ -4,6 +4,8 @@ import jwt from 'jsonwebtoken';
 import db from '../models';
 import { AUTH_SECRET } from '../config';
 
+// jwt creates a exp which is a unix timestamp for when the token expires
+
 const router = express.Router();
 
 const validate = (body) => {
