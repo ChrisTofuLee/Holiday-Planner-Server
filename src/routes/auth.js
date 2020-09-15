@@ -9,13 +9,13 @@ import { AUTH_SECRET } from '../config';
 const router = express.Router();
 
 const validate = (body) => {
-  const { firstName, lastName, email, password } = body;
-  const isValid = firstName && lastName && email && password;
+  const { displayName, email, password } = body;
+  const isValid = displayName && email && password;
   return isValid;
 };
 
 const registerUser = async (req, res) => {
-  const { firstName, lastName, email, password } = req.body;
+  const { displayName, email, password } = req.body;
   if (validate(req.body)) {
     const user = await db.User.findOne({ email });
     if (user) {
@@ -29,9 +29,8 @@ const registerUser = async (req, res) => {
 
       await db.User.create({
         email,
-        firstName: firstName.trim(),
-        lastName: lastName.trim(),
         password: passwordHash,
+        displayName: displayName.trim(),
       });
 
       res.status(201).json({
