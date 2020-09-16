@@ -11,23 +11,16 @@ const apiRouter = express.Router();
 // const FIND_PLACE_URL = `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=Museum%20of%20Contemporary%20Art%20Australia&inputtype=textquery&fields=photos,formatted_address,name,rating,opening_hours,geometry&key=${GOOGLE_API_KEY}`;
 // const SEARCH_URL1 = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=restaurants+in+Sydney&key=${GOOGLE_API_KEY}`;
 
-// const transformGooglePlaces = (googlePlaces = []) => {
-//   return googlePlaces.map((googlePlace) => {
-//     return {
-//       name: googlePlace.name,
-//       address: googlePlace.formatted_address,
-//       placeId: googlePlace.place_id,
-//       price: googlePlace.price_level,
-//       rating: googlePlace.rating,
-//       photo: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${googlePlace.photos[0].photo_reference}&key=${GOOGLE_API_KEY}`,
-//       type: googlePlace.types,
-//     };
-//   });
-// };
-
-const transformGooglePlaces = (tests) => {
-  console.log(tests);
-};
+// add return if adding more functionality than just the single line
+const transformGooglePlaces = (googlePlaces = []) => googlePlaces.map((googlePlace) => ({
+  name: googlePlace.name,
+  address: googlePlace.formatted_address,
+  placeId: googlePlace.place_id,
+  price: googlePlace.price_level,
+  rating: googlePlace.rating,
+  photo: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${googlePlace.photos[0].photo_reference}&key=${GOOGLE_API_KEY}`,
+  type: googlePlace.types,
+}));
 
 const getPlacesFromGoogle = async (req, res) => {
   try {
