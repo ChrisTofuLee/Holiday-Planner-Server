@@ -90,10 +90,15 @@ const getPlacesFromGoogle = async (req, res) => {
 
 const getAllPlans = async (req, res) => {
   try {
-    const allPlans = await db.Plan.find({});
-    // const allPlans = await db.Plan.find({}).sort({ date: -1 })
 
-    res.status(201).json({ allPlans });
+    const {
+      user: { id },
+    } = req;
+    console.log(req.user);
+    const allPlans = await db.Plan.find({ userId: id });
+    // const allPlans = await db.Plan.find({}).sort({ date: -1 })
+    res.json({ allPlans });
+
   } catch (error) {
     res.status(500).json({
       error: error.message,

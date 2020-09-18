@@ -11,7 +11,7 @@
     "lint:fix": "eslint src --fix",
     "start": "npm run build && node dist/index.js",
     "start:dev": "nodemon -e js --watch src --exec \"npm run start\"",
-    "seed": "npm run build && node dist/script/seed.js"
+    "seed": "npm run build && node dist/scripts/seed.js"
   },
   "repository": {
     "type": "git",
@@ -41,9 +41,11 @@
   },
   "dependencies": {
     "axios": "^0.20.0",
+    "bcrypt": "^5.0.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.10.5"
   }
 }
