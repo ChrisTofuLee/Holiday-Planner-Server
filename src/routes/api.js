@@ -135,7 +135,7 @@ const removePlanInDB = async (req, res) => {
   }
 };
 
-const removePlaceInDB = async (req, res) => {
+const removePlaceInDB = () => {
   // You have make this a put request where you pass
   // in the plan ID and you remove the place from the
   // places array in the plan. So basically this is an
@@ -145,7 +145,7 @@ const removePlaceInDB = async (req, res) => {
   // PUT - /plans/:id/removePlace
 };
 
-const savePlaceInDB = async (req, res) => {
+const savePlaceInDB = () => {
   // Same as above should be an update request where you
   // update a plan by ID and add a new place to the places
   // array for the plan.
@@ -153,7 +153,7 @@ const savePlaceInDB = async (req, res) => {
   // PUT - /plans/:id/addPlace
 };
 
-const getPlanById = async (req, res) => {
+const getPlanById = () => {
   // This is should be simple as you find a plan
   // by the ID passed in the req params
 };
