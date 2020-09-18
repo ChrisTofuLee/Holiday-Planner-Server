@@ -30,28 +30,29 @@ const getPlacesFromGoogle = async (req, res) => {
     const SEARCH_URL_TEST = (status) => `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${status}+in+${searchTerm}&key=${GOOGLE_API_KEY}`;
     // add req.param to pull searchStatus from switch boxes
     const searchStatus = { food: true, nightlife: true, activities: false };
-    const foodResults = [];
-    const nightlifeResults = [];
-    const activitiesResults = [];
+    let foodResults = [];
+    let nightlifeResults = [];
+    let activitiesResults = [];
 
+    // setting up api requests based on switch boxes from user search
     if (searchStatus.food) {
       const { foodData } = await axios.get(SEARCH_URL_TEST('food'));
-      const foodResults = transformGooglePlaces(foodData.results);
+      foodResults = transformGooglePlaces(foodData.results);
     }
     if (searchStatus.nightlife) {
       const { nightlifeData } = await axios.get(SEARCH_URL_TEST('nightlife'));
-      const nightlifeResults = transformGooglePlaces(nightlifeData.results);
+      nightlifeResults = transformGooglePlaces(nightlifeData.results);
     }
     if (searchStatus.activities) {
       const { activitiesData } = await axios.get(SEARCH_URL_TEST('activities'));
-      const activitiesResults = transformGooglePlaces(activitiesData.results);
+      activitiesResults = transformGooglePlaces(activitiesData.results);
     }
     // add if food = true, searchurl + food etc
 
-    const SEARCH_URL = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=food+in+${searchTerm}&key=${GOOGLE_API_KEY}`;
+    // const SEARCH_URL = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=food+in+${searchTerm}&key=${GOOGLE_API_KEY}`;
 
-    const { data } = await axios.get(SEARCH_URL);
-    const results = transformGooglePlaces(data.results);
+    // const { data } = await axios.get(SEARCH_URL);
+    // const results = transformGooglePlaces(data.results);
 
     res.status(201).json({ foodResults, nightlifeResults, activitiesResults });
   } catch (error) {
