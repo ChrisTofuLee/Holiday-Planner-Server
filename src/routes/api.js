@@ -18,10 +18,12 @@ const GOOGLE_PLACE_PHOTO = 'https://maps.googleapis.com/maps/api/place/photo';
 
 const getPhotoURL = (googlePlace) => {
   if (googlePlace.photos && googlePlace.photos.length && googlePlace.photos[0].photo_reference) {
-    return `${GOOGLE_PLACE_PHOTO}?maxwidth=400&photoreference=${googlePlace.photos[0].photo_reference}&key=${GOOGLE_API_KEY}`;
+    return `${GOOGLE_PLACE_PHOTO}?maxwidth=300&photoreference=${googlePlace.photos[0].photo_reference}&key=${GOOGLE_API_KEY}`;
   }
   return 'https://via.placeholder.com/400';
 };
+
+// places details `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&key=${GOOGLE_API_KEY}` ?limit=10
 
 const transformGooglePlaces = (googlePlaces = []) => googlePlaces.map((googlePlace) => ({
   name: googlePlace.name,
@@ -31,6 +33,7 @@ const transformGooglePlaces = (googlePlaces = []) => googlePlaces.map((googlePla
   rating: googlePlace.rating,
   photo: getPhotoURL(googlePlace),
   type: googlePlace.types,
+  icon: googlePlace.icon,
 }));
 
 const getPlacesFromGoogle = async (req, res) => {
@@ -50,6 +53,7 @@ const getPlacesFromGoogle = async (req, res) => {
           params: {
             query: `food+in+${searchTerm}`,
             key: GOOGLE_API_KEY,
+            limit: 10,
           },
         },
       );
@@ -79,7 +83,18 @@ const getPlacesFromGoogle = async (req, res) => {
       );
       activitiesResults = transformGooglePlaces(activitiesData.results);
     }
-
+    if (!activities && !nightlife && !food) {
+      const { activitiesData } = await axios.get(
+        GOOGLE_TEXT_SEARCH_URL,
+        {
+          params: {
+            query: `activities+in+${searchTerm}`,
+            key: GOOGLE_API_KEY,
+          },
+        },
+      );
+      activitiesResults = transformGooglePlaces(activitiesData);
+    }
     res.status(201).json({ foodResults, nightlifeResults, activitiesResults });
   } catch (error) {
     res.status(500).json({
@@ -90,7 +105,6 @@ const getPlacesFromGoogle = async (req, res) => {
 
 const getAllPlans = async (req, res) => {
   try {
-
     const {
       user: { id },
     } = req;
@@ -98,7 +112,6 @@ const getAllPlans = async (req, res) => {
     const allPlans = await db.Plan.find({ userId: id });
     // const allPlans = await db.Plan.find({}).sort({ date: -1 })
     res.json({ allPlans });
-
   } catch (error) {
     res.status(500).json({
       error: error.message,
