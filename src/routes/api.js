@@ -83,18 +83,6 @@ const getPlacesFromGoogle = async (req, res) => {
       );
       activitiesResults = transformGooglePlaces(activitiesData.results);
     }
-    if (!activities && !nightlife && !food) {
-      const { activitiesData } = await axios.get(
-        GOOGLE_TEXT_SEARCH_URL,
-        {
-          params: {
-            query: `activities+in+${searchTerm}`,
-            key: GOOGLE_API_KEY,
-          },
-        },
-      );
-      activitiesResults = transformGooglePlaces(activitiesData);
-    }
     res.status(201).json({ foodResults, nightlifeResults, activitiesResults });
   } catch (error) {
     res.status(500).json({
