@@ -4,7 +4,7 @@ import { DB_URI, MONGOOSE_OPTIONS } from '../config';
 
 mongoose.connect(DB_URI, MONGOOSE_OPTIONS);
 
-const users = [{ email: 'abc@eg.com', displayName: 'abc', password: '123' }];
+const users = [{ email: 'abc@123.com', displayName: 'abc', password: '123' }];
 db.User.deleteMany({})
   .then(() => db.User.collection.insertMany(users))
   .then((data) => {

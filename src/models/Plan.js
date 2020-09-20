@@ -33,6 +33,15 @@ const schema = new Schema({
       rating: {
         type: Number,
       },
+      price: {
+        type: Number,
+      },
+      photo: {
+        type: String,
+      },
+      icon: {
+        type: String,
+      },
     },
   ],
   userId: {
