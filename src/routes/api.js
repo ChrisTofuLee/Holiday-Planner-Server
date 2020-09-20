@@ -58,7 +58,6 @@ const getPlacesFromGoogle = async (req, res) => {
         params: {
           query: `food+in+${searchTerm}`,
           key: GOOGLE_API_KEY,
-          limit: 10,
         },
       });
       foodResults = transformGooglePlaces(foodData.results);
