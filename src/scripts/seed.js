@@ -8,7 +8,6 @@ const plans = [
   {
     title: 'Norway',
     places: [
-      
       {
         name: "Tetsuya's Museum",
         address: '225 brown St, Sydney NSW 2000, Australia',
