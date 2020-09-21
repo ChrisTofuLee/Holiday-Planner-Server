@@ -7,7 +7,8 @@ require('dotenv').config();
 const { GOOGLE_API_KEY } = process.env;
 const apiRouter = express.Router();
 
-const GOOGLE_TEXT_SEARCH_URL = 'https://maps.googleapis.com/maps/api/place/textsearch/json';
+const GOOGLE_TEXT_SEARCH_URL =
+  'https://maps.googleapis.com/maps/api/place/textsearch/json';
 const GOOGLE_PLACE_PHOTO = 'https://maps.googleapis.com/maps/api/place/photo';
 
 // const FOOD_URL = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522,151.1957362&radius=1500&type=restaurant&keyword=cruise&key=${GOOGLE_API_KEY}`;
@@ -18,27 +19,50 @@ const GOOGLE_PLACE_PHOTO = 'https://maps.googleapis.com/maps/api/place/photo';
 
 const getPhotoURL = (googlePlace) => {
   if (
-    googlePlace.photos
-    && googlePlace.photos.length
-    && googlePlace.photos[0].photo_reference
+    googlePlace.photos &&
+    googlePlace.photos.length &&
+    googlePlace.photos[0].photo_reference
   ) {
     return `${GOOGLE_PLACE_PHOTO}?maxwidth=300&photoreference=${googlePlace.photos[0].photo_reference}&key=${GOOGLE_API_KEY}`;
   }
   return 'https://via.placeholder.com/400';
 };
 
+const getPlaceDetails = async (googlePlace, term) => {
+  const DETAILS_URL = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${googlePlace.place_id}&key=${GOOGLE_API_KEY}`;
+  const { data } = await axios.get(DETAILS_URL);
+  // const { reviews, url, website, opening_hours: {weekday_text}} = detailsData;
+  // const filtered = if (term == reviews) {}
+  if (term === 'weekday_text') {
+    const detailData = data.result.opening_hours[term];
+    return detailData;
+  }
+  const detailData = data.result[term];
+  return detailData;
+};
+
 // places details `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&key=${GOOGLE_API_KEY}` ?limit=10
 
-const transformGooglePlaces = (googlePlaces = []) => googlePlaces.map((googlePlace) => ({
-  name: googlePlace.name,
-  address: googlePlace.formatted_address,
-  googlePlacesId: googlePlace.place_id,
-  price: googlePlace.price_level,
-  rating: googlePlace.rating,
-  photo: getPhotoURL(googlePlace),
-  type: googlePlace.types,
-  icon: googlePlace.icon,
-}));
+const transformGooglePlaces = async (googlePlaces = []) => {
+  // const placeOne = await getPlaceDetails(googlePlaces[0], 'reviews');
+  const data = await Promise.all(
+    googlePlaces.map(async (googlePlace) => ({
+      name: googlePlace.name,
+      address: googlePlace.formatted_address,
+      googlePlacesId: googlePlace.place_id,
+      price: googlePlace.price_level,
+      rating: googlePlace.rating,
+      photo: getPhotoURL(googlePlace),
+      type: googlePlace.types,
+      icon: googlePlace.icon,
+      review: await getPlaceDetails(googlePlace, 'reviews'),
+      googleUrl: await getPlaceDetails(googlePlace, 'url'),
+      siteUrl: await getPlaceDetails(googlePlace, 'website'),
+      openingTimes: await getPlaceDetails(googlePlace, 'weekday_text'),
+    })),
+  );
+  return data;
+};
 
 const getPlacesFromGoogle = async (req, res) => {
   try {
@@ -60,7 +84,8 @@ const getPlacesFromGoogle = async (req, res) => {
           key: GOOGLE_API_KEY,
         },
       });
-      foodResults = transformGooglePlaces(foodData.results);
+      foodData.results.splice(1, 18);
+      foodResults = await transformGooglePlaces(foodData.results);
     }
     if (nightlife) {
       const { data: nightlifeData } = await axios.get(GOOGLE_TEXT_SEARCH_URL, {
@@ -210,11 +235,11 @@ const getPlanById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const plan = await db.Plan.findOne({ _id: id });
+    const data = await db.Plan.findById(id);
 
     res.status(201).json({
       success: true,
-      plan,
+      data,
     });
   } catch (error) {
     res.status(500).json({
@@ -227,9 +252,13 @@ const getPlaceById = async (req, res) => {
   try {
     const { id, placeId } = req.params;
 
-    const plan = await db.Plan.findOne(id);
+    const plan = await db.Plan.findById(id);
 
-    const foundPlace = plan.places.find((place) => place._id === placeId);
+    // const foundPlace = await plan.places.find((place) => place._id === placeId);
+    const foundPlace = await plan.places.filter(
+      (place) => place._id === placeId,
+    );
+    console.log(foundPlace);
     res.status(201).json({
       success: true,
       foundPlace,
