@@ -4,7 +4,7 @@ import db from '../models';
 
 require('dotenv').config();
 
-const { GOOGLE_API_KEY } = process.env;
+const { GOOGLE_API_KEY, BACKUP_API_KEY } = process.env;
 const apiRouter = express.Router();
 
 const GOOGLE_TEXT_SEARCH_URL = 'https://maps.googleapis.com/maps/api/place/textsearch/json';
@@ -22,7 +22,7 @@ const getPhotoURL = (googlePlace) => {
     && googlePlace.photos.length
     && googlePlace.photos[0].photo_reference
   ) {
-    return `${GOOGLE_PLACE_PHOTO}?maxwidth=300&photoreference=${googlePlace.photos[0].photo_reference}&key=${GOOGLE_API_KEY}`;
+    return `${GOOGLE_PLACE_PHOTO}?maxwidth=300&photoreference=${googlePlace.photos[0].photo_reference}&key=${BACKUP_API_KEY}`;
   }
   return 'https://via.placeholder.com/400';
 };
