@@ -27,18 +27,45 @@ const getPhotoURL = (googlePlace) => {
   return 'https://via.placeholder.com/400';
 };
 
+const getPlaceDetails = async (googlePlace, term) => {
+  const DETAILS_URL = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${googlePlace.place_id}&key=${GOOGLE_API_KEY}`;
+  const { data } = await axios.get(DETAILS_URL);
+  // const { reviews, url, website, opening_hours: {weekday_text}} = detailsData;
+  // const filtered = if (term == reviews) {}
+  if (term === 'weekday_text') {
+    const detailData = data.result.opening_hours[term];
+    return detailData;
+  }
+  const detailData = data.result[term];
+  return detailData;
+};
+
 // places details `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&key=${GOOGLE_API_KEY}` ?limit=10
 
-const transformGooglePlaces = (googlePlaces = []) => googlePlaces.map((googlePlace) => ({
-  name: googlePlace.name,
-  address: googlePlace.formatted_address,
-  googlePlacesId: googlePlace.place_id,
-  price: googlePlace.price_level,
-  rating: googlePlace.rating,
-  photo: getPhotoURL(googlePlace),
-  type: googlePlace.types,
-  icon: googlePlace.icon,
-}));
+const transformGooglePlaces = async (googlePlaces = [], type) => {
+  // const placeOne = await getPlaceDetails(googlePlaces[0], 'reviews');
+
+  const data = await Promise.all(
+    googlePlaces.map(async (googlePlace) => {
+      const review = await getPlaceDetails(googlePlace, 'reviews');
+      return {
+        name: googlePlace.name,
+        address: googlePlace.formatted_address,
+        googlePlacesId: googlePlace.place_id,
+        price: googlePlace.price_level,
+        rating: googlePlace.rating,
+        photo: getPhotoURL(googlePlace),
+        type,
+        icon: googlePlace.icon,
+        review,
+        googleUrl: await getPlaceDetails(googlePlace, 'url'),
+        siteUrl: await getPlaceDetails(googlePlace, 'website'),
+        openingTimes: await getPlaceDetails(googlePlace, 'weekday_text'),
+      };
+    }),
+  );
+  return data;
+};
 
 const getPlacesFromGoogle = async (req, res) => {
   try {
@@ -60,7 +87,8 @@ const getPlacesFromGoogle = async (req, res) => {
           key: GOOGLE_API_KEY,
         },
       });
-      foodResults = transformGooglePlaces(foodData.results);
+      foodData.results.splice(0, 19);
+      foodResults = await transformGooglePlaces(foodData.results, 'Food');
     }
     if (nightlife) {
       const { data: nightlifeData } = await axios.get(GOOGLE_TEXT_SEARCH_URL, {
@@ -69,7 +97,11 @@ const getPlacesFromGoogle = async (req, res) => {
           key: GOOGLE_API_KEY,
         },
       });
-      nightlifeResults = transformGooglePlaces(nightlifeData.results);
+      nightlifeData.results.splice(0, 19);
+      nightlifeResults = await transformGooglePlaces(
+        nightlifeData.results,
+        'Nightlife',
+      );
     }
     if (activities) {
       const { data: activitiesData } = await axios.get(GOOGLE_TEXT_SEARCH_URL, {
@@ -78,8 +110,13 @@ const getPlacesFromGoogle = async (req, res) => {
           key: GOOGLE_API_KEY,
         },
       });
-      activitiesResults = transformGooglePlaces(activitiesData.results);
+      activitiesData.results.splice(0, 19);
+      activitiesResults = await transformGooglePlaces(
+        activitiesData.results,
+        'Activities',
+      );
     }
+
     res.status(201).json({ foodResults, nightlifeResults, activitiesResults });
   } catch (error) {
     res.status(500).json({
@@ -93,7 +130,7 @@ const getAllPlans = async (req, res) => {
     const {
       user: { id },
     } = req;
-    console.log(req.user);
+    console.log('getallplans', req.user);
     // const allPlans = await db.Plan.find({ userId: id });
     const allPlans = await db.Plan.find({ userId: id }).sort({ createdAt: -1 });
     res.json({ allPlans });
@@ -106,10 +143,10 @@ const getAllPlans = async (req, res) => {
 
 const savePlanInDB = async (req, res) => {
   try {
-    const payload = req.body;
+    const { planName } = req.body;
+    const planTitle = { title: planName };
     const currentUserId = req.user.id;
-    const plan = { ...payload, userId: currentUserId };
-
+    const plan = { ...planTitle, userId: currentUserId };
     const createdPlan = await db.Plan.create(plan);
 
     res.status(201).json({
@@ -125,9 +162,9 @@ const savePlanInDB = async (req, res) => {
 
 const removePlanInDB = async (req, res) => {
   try {
-    const { id } = req.params;
+    const planId = req.params.id;
 
-    await db.Plan.findByIdAndDelete(id);
+    await db.Plan.findByIdAndDelete(planId);
     // await db.Plan.find({});
 
     res.status(201).json({
@@ -192,7 +229,7 @@ const addPlaceInDB = async (req, res) => {
     const plan = await db.Plan.findById(id);
     plan.places.push(payload);
     const placeAdded = await plan.save();
-
+    console.log(id, payload);
     res.status(201).json({
       success: true,
       placeAdded,
@@ -210,11 +247,11 @@ const getPlanById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const plan = await db.Plan.findOne({ _id: id });
+    const data = await db.Plan.findById(id);
 
     res.status(201).json({
       success: true,
-      plan,
+      data,
     });
   } catch (error) {
     res.status(500).json({
@@ -227,9 +264,13 @@ const getPlaceById = async (req, res) => {
   try {
     const { id, placeId } = req.params;
 
-    const plan = await db.Plan.findOne(id);
+    const plan = await db.Plan.findById(id);
 
-    const foundPlace = plan.places.find((place) => place._id === placeId);
+    // const foundPlace = await plan.places.find((place) => place._id === placeId);
+    const foundPlace = await plan.places.filter(
+      (place) => place._id === placeId,
+    );
+    console.log(foundPlace);
     res.status(201).json({
       success: true,
       foundPlace,
@@ -242,10 +283,10 @@ const getPlaceById = async (req, res) => {
 };
 
 apiRouter.post('/cities', getPlacesFromGoogle);
+apiRouter.post('/plans', savePlanInDB);
 apiRouter.get('/plans', getAllPlans);
 apiRouter.get('/plans/:id', getPlanById);
 apiRouter.get('/plans/:id/place/:placeId', getPlaceById);
-apiRouter.post('/plans', savePlanInDB);
 apiRouter.delete('/plans/:id', removePlanInDB);
 apiRouter.put('/plans/:id/addPlace', addPlaceInDB);
 apiRouter.put('/plans/:id/removePlace', removePlaceInDB);

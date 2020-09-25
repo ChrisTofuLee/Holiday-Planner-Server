@@ -42,6 +42,45 @@ const schema = new Schema({
       icon: {
         type: String,
       },
+      review: {
+        type: [
+          {
+            author_name: {
+              type: String,
+            },
+            author_url: {
+              type: String,
+            },
+            language: {
+              type: String,
+            },
+            profile_photo_url: {
+              type: String,
+            },
+            rating: {
+              type: String,
+            },
+            relative_time_description: {
+              type: String,
+            },
+            text: {
+              type: String,
+            },
+            time: {
+              type: String,
+            },
+          },
+        ],
+      },
+      googleUrl: {
+        type: String,
+      },
+      siteUrl: {
+        type: String,
+      },
+      openingTimes: {
+        type: [String],
+      },
     },
   ],
   userId: {
