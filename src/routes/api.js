@@ -7,7 +7,8 @@ require('dotenv').config();
 const { GOOGLE_API_KEY, BACKUP_API_KEY } = process.env;
 const apiRouter = express.Router();
 
-const GOOGLE_TEXT_SEARCH_URL = 'https://maps.googleapis.com/maps/api/place/textsearch/json';
+const GOOGLE_TEXT_SEARCH_URL =
+  'https://maps.googleapis.com/maps/api/place/textsearch/json';
 const GOOGLE_PLACE_PHOTO = 'https://maps.googleapis.com/maps/api/place/photo';
 
 // const FOOD_URL = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522,151.1957362&radius=1500&type=restaurant&keyword=cruise&key=${GOOGLE_API_KEY}`;
@@ -18,9 +19,9 @@ const GOOGLE_PLACE_PHOTO = 'https://maps.googleapis.com/maps/api/place/photo';
 
 const getPhotoURL = (googlePlace) => {
   if (
-    googlePlace.photos
-    && googlePlace.photos.length
-    && googlePlace.photos[0].photo_reference
+    googlePlace.photos &&
+    googlePlace.photos.length &&
+    googlePlace.photos[0].photo_reference
   ) {
     return `${GOOGLE_PLACE_PHOTO}?maxwidth=300&photoreference=${googlePlace.photos[0].photo_reference}&key=${BACKUP_API_KEY}`;
   }
@@ -30,13 +31,26 @@ const getPhotoURL = (googlePlace) => {
 const getPlaceDetails = async (googlePlace, term) => {
   const DETAILS_URL = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${googlePlace.place_id}&key=${BACKUP_API_KEY}`;
   const { data } = await axios.get(DETAILS_URL);
+  console.log(data);
+  const defaultData = [
+    'Monday: 12:00 – 1:00 AM, 8:00 AM – 1:00 AM',
+    'Tuesday: 8:00 AM – 1:00 AM',
+    'Wednesday: 8:00 AM – 1:00 AM',
+    'Thursday: 8:00 AM – 1:00 AM',
+    'Friday: 8:00 AM – 1:00 AM',
+    'Saturday: 8:00 AM – 1:00 AM',
+    'Sunday: 8:00 AM – 5:00 PM',
+  ];
   // const { reviews, url, website, opening_hours: {weekday_text}} = detailsData;
   // const filtered = if (term == reviews) {}
   if (term === 'weekday_text') {
-    const detailData = data.result.opening_hours[term];
+    const detailData =
+      data && data.result && data.result.opening_hours
+        ? data.result.opening_hours[term]
+        : defaultData;
     return detailData;
   }
-  const detailData = data.result[term];
+  const detailData = data && data.result ? data.result[term] : defaultData;
   return detailData;
 };
 
