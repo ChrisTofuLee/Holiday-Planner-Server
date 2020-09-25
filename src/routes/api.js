@@ -28,7 +28,7 @@ const getPhotoURL = (googlePlace) => {
 };
 
 const getPlaceDetails = async (googlePlace, term) => {
-  const DETAILS_URL = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${googlePlace.place_id}&key=${GOOGLE_API_KEY}`;
+  const DETAILS_URL = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${googlePlace.place_id}&key=${BACKUP_API_KEY}`;
   const { data } = await axios.get(DETAILS_URL);
   // const { reviews, url, website, opening_hours: {weekday_text}} = detailsData;
   // const filtered = if (term == reviews) {}
@@ -87,7 +87,7 @@ const getPlacesFromGoogle = async (req, res) => {
           key: GOOGLE_API_KEY,
         },
       });
-      foodData.results.splice(0, 19);
+      foodData.results.splice(0, 9);
       foodResults = await transformGooglePlaces(foodData.results, 'Food');
     }
     if (nightlife) {
@@ -97,7 +97,7 @@ const getPlacesFromGoogle = async (req, res) => {
           key: GOOGLE_API_KEY,
         },
       });
-      nightlifeData.results.splice(0, 19);
+      nightlifeData.results.splice(0, 9);
       nightlifeResults = await transformGooglePlaces(
         nightlifeData.results,
         'Nightlife',
@@ -110,7 +110,7 @@ const getPlacesFromGoogle = async (req, res) => {
           key: GOOGLE_API_KEY,
         },
       });
-      activitiesData.results.splice(0, 19);
+      activitiesData.results.splice(0, 9);
       activitiesResults = await transformGooglePlaces(
         activitiesData.results,
         'Activities',
