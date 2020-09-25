@@ -14,6 +14,10 @@ const schema = new Schema({
   },
   places: [
     {
+      planId: {
+        type: String,
+        required: true,
+      },
       googlePlacesId: {
         type: String,
         required: true,

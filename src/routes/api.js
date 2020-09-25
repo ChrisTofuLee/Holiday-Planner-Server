@@ -4,10 +4,11 @@ import db from '../models';
 
 require('dotenv').config();
 
-const { GOOGLE_API_KEY } = process.env;
+const { GOOGLE_API_KEY, BACKUP_API_KEY } = process.env;
 const apiRouter = express.Router();
 
-const GOOGLE_TEXT_SEARCH_URL = 'https://maps.googleapis.com/maps/api/place/textsearch/json';
+const GOOGLE_TEXT_SEARCH_URL =
+  'https://maps.googleapis.com/maps/api/place/textsearch/json';
 const GOOGLE_PLACE_PHOTO = 'https://maps.googleapis.com/maps/api/place/photo';
 
 // const FOOD_URL = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522,151.1957362&radius=1500&type=restaurant&keyword=cruise&key=${GOOGLE_API_KEY}`;
@@ -18,9 +19,9 @@ const GOOGLE_PLACE_PHOTO = 'https://maps.googleapis.com/maps/api/place/photo';
 
 const getPhotoURL = (googlePlace) => {
   if (
-    googlePlace.photos
-    && googlePlace.photos.length
-    && googlePlace.photos[0].photo_reference
+    googlePlace.photos &&
+    googlePlace.photos.length &&
+    googlePlace.photos[0].photo_reference
   ) {
     return `${GOOGLE_PLACE_PHOTO}?maxwidth=300&photoreference=${googlePlace.photos[0].photo_reference}&key=${GOOGLE_API_KEY}`;
   }
@@ -84,7 +85,7 @@ const getPlacesFromGoogle = async (req, res) => {
       const { data: foodData } = await axios.get(GOOGLE_TEXT_SEARCH_URL, {
         params: {
           query: `food+in+${searchTerm}`,
-          key: GOOGLE_API_KEY,
+          key: BACKUP_API_KEY,
         },
       });
       foodData.results.splice(0, 19);
@@ -189,9 +190,7 @@ const removePlaceInDB = async (req, res) => {
     const { googlePlacesId } = req.body;
 
     const plan = await db.Plan.findById(id);
-    const newPlaces = plan.places.filter(
-      (place) => place.googlePlacesId !== googlePlacesId,
-    );
+    const newPlaces = plan.places.filter((place) => place.googlePlacesId !== googlePlacesId);
     plan.places = newPlaces;
     const newPlaceList = await plan.save();
 
@@ -227,9 +226,9 @@ const addPlaceInDB = async (req, res) => {
     // );
 
     const plan = await db.Plan.findById(id);
-    plan.places.push(payload);
+    plan.places.push({ ...payload, planId: id });
     const placeAdded = await plan.save();
-    console.log(id, payload);
+    console.log(placeAdded);
     res.status(201).json({
       success: true,
       placeAdded,
