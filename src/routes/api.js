@@ -96,7 +96,7 @@ const getPlacesFromGoogle = async (req, res) => {
       const { data: foodData } = await axios.get(GOOGLE_TEXT_SEARCH_URL, {
         params: {
           query: `food+in+${searchTerm}`,
-          key: GOOGLE_API_KEY,
+          key: BACKUP_API_KEY,
         },
       });
       foodData.results.splice(0, 9);
@@ -201,9 +201,7 @@ const removePlaceInDB = async (req, res) => {
     const { googlePlacesId } = req.body;
 
     const plan = await db.Plan.findById(id);
-    const newPlaces = plan.places.filter(
-      (place) => place.googlePlacesId !== googlePlacesId,
-    );
+    const newPlaces = plan.places.filter((place) => place.googlePlacesId !== googlePlacesId);
     plan.places = newPlaces;
     const newPlaceList = await plan.save();
 
@@ -239,9 +237,9 @@ const addPlaceInDB = async (req, res) => {
     // );
 
     const plan = await db.Plan.findById(id);
-    plan.places.push(payload);
+    plan.places.push({ ...payload, planId: id });
     const placeAdded = await plan.save();
-    console.log(id, payload);
+    console.log(placeAdded);
     res.status(201).json({
       success: true,
       placeAdded,

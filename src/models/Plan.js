@@ -14,6 +14,10 @@ const schema = new Schema({
   },
   places: [
     {
+      planId: {
+        type: String,
+        required: true,
+      },
       googlePlacesId: {
         type: String,
         required: true,
@@ -93,7 +97,6 @@ const schema = new Schema({
   //   ref: 'User',
   // },
 });
-// add last updated at?
 const Plan = mongoose.model('Plan', schema);
 
 export default Plan;
