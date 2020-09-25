@@ -7,8 +7,7 @@ require('dotenv').config();
 const { GOOGLE_API_KEY, BACKUP_API_KEY } = process.env;
 const apiRouter = express.Router();
 
-const GOOGLE_TEXT_SEARCH_URL =
-  'https://maps.googleapis.com/maps/api/place/textsearch/json';
+const GOOGLE_TEXT_SEARCH_URL = 'https://maps.googleapis.com/maps/api/place/textsearch/json';
 const GOOGLE_PLACE_PHOTO = 'https://maps.googleapis.com/maps/api/place/photo';
 
 // const FOOD_URL = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522,151.1957362&radius=1500&type=restaurant&keyword=cruise&key=${GOOGLE_API_KEY}`;
@@ -19,9 +18,9 @@ const GOOGLE_PLACE_PHOTO = 'https://maps.googleapis.com/maps/api/place/photo';
 
 const getPhotoURL = (googlePlace) => {
   if (
-    googlePlace.photos &&
-    googlePlace.photos.length &&
-    googlePlace.photos[0].photo_reference
+    googlePlace.photos
+    && googlePlace.photos.length
+    && googlePlace.photos[0].photo_reference
   ) {
     return `${GOOGLE_PLACE_PHOTO}?maxwidth=300&photoreference=${googlePlace.photos[0].photo_reference}&key=${GOOGLE_API_KEY}`;
   }
