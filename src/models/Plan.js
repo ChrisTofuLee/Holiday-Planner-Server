@@ -97,7 +97,6 @@ const schema = new Schema({
   //   ref: 'User',
   // },
 });
-// add last updated at?
 const Plan = mongoose.model('Plan', schema);
 
 export default Plan;
